@@ -13,6 +13,7 @@ public:
 
 private:
     int LUT[PIXEL_VAL_MAX+1];
+    const int boundariesCheck(int value);
 };
 
 #endif // CORRECTION_H
