@@ -24,15 +24,84 @@ Histogram::~Histogram()
 
 void Histogram::generate(QImage* image)
 {
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
+    int width = image->width();
+    int height = image->height();
+
+    if (image->format() == QImage::Format_Indexed8)
+    {
+        for (int x=0; x<width; x++)
+            for (int y=0; y<height; y++)
+            {
+                QRgb pixel = image->pixel(x,y);
+
+                int val = qGray(pixel);
+
+                if(L->contains(val))
+                {
+                    L->insert(val, L->value(val) + 1);
+                }
+                else
+                {
+                    L->insert(val, 1);
+                }
+            }
+    }
+    else
+    {
+        for (int x=0; x<width; x++)
+            for (int y=0; y<height; y++)
+            {
+                QRgb pixel = image->pixel(x,y);
+
+                int r = qRed(pixel);
+                int g = qGreen(pixel);
+                int b = qBlue(pixel);
+
+                if(R->contains(r))
+                    R->insert(r, R->value(r) + 1);
+                else
+                    R->insert(r, 1);
+
+                if(G->contains(g))
+                    G->insert(g, G->value(g) + 1);
+                else
+                    G->insert(g, 1);
+
+                if(B->contains(b))
+                    B->insert(b, B->value(b) + 1);
+                else
+                    B->insert(b, 1);
+            }
+    }
 }
 
 /** Returns the maximal value of the histogram in the given channel */
 int Histogram::maximumValue(Channel selectedChannel = RGB)
 {
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
+    int greatestValue = 0;
+    int greatestKey = 0;
 
-    return 0;
+    if (selectedChannel!=RGB) {
+
+        QHash<int, int>* channelHash = Histogram::get(selectedChannel);
+        QHash<int, int>::const_iterator i;
+        for (i = channelHash->constBegin(); i != channelHash->constEnd(); ++i)
+            if (i.value() > greatestValue) {
+                greatestKey = i.key();
+                greatestValue = i.value();
+            }
+    } else {
+        greatestValue = maximumValue(RChannel);
+        int cValue = maximumValue(GChannel);
+        if(cValue > greatestValue){
+            greatestValue = cValue;
+        }
+        cValue = maximumValue(BChannel);
+        if(cValue > greatestValue) {
+            greatestValue = cValue;
+        }
+    }
+    return greatestValue;
 }
 
 
