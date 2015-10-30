@@ -41,7 +41,7 @@ PNM* Convolution::convolute(math::matrix<float> mask, Mode mode = RepeatEdge)
     PNM* newImage = new PNM(width, height, image->format());
 
     float weight = sum(mask);
-
+    math::matrix<float> derp = reflection(mask);
     if(image->format() == QImage::Format_Indexed8){
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
@@ -151,23 +151,25 @@ const math::matrix<float> Convolution::reflection(const math::matrix<float> A)
 {
     int size = A.rowno();
     math::matrix<float> C(size, size);
-
     int srodek = floor(size/2);
     float tmp = 0;
-    if( (srodek % 2) != 0){
+    if( (size % 2) != 0){
         for(int w = 0; w <= srodek; w++){
-            for(int k = 0; k <= srodek; k++){
+            for(int k = 0; k < size; k++){
+                if(w == srodek && k > srodek){
+                    continue;
+                }
                 tmp = C[w][k];
-                C[w][k] = C[2*srodek - w][2*srodek - k];
-                C[2*srodek - w][2*srodek - k] = tmp;
+                C[w][k] = C[size - 1 - w][size - 1 - k];
+                C[size - 1 - w][size - 1 - k] = tmp;
             }
         }
     }else{
         for(int w = 0; w < srodek; w++){
-            for(int k = 0; k < srodek; k++){
+            for(int k = 0; k < size; k++){
                 tmp = C[w][k];
-                C[w][k] = C[(2*srodek - 1) - w][(2*srodek - 1) - k];
-                C[(2*srodek - 1) - w][(2*srodek - 1) - k] = tmp;
+                C[w][k] = C[size - 1 - w][size - 1 - k];
+                C[size - 1 - w][size - 1 - k] = tmp;
             }
         }
     }
