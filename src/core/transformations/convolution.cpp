@@ -1,5 +1,4 @@
 #include "convolution.h"
-#include <iostream>
 
 /** Overloaded constructor */
 Convolution::Convolution(PNM* img) :
