@@ -103,9 +103,7 @@ QRgb Transformation::getPixel(int x, int y, Mode mode)
  */
 QRgb Transformation::getPixelCyclic(int x, int y)
 {
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
-
-    return image->pixel(x,y);
+    return image->pixel(x % image->width(),y % image->height());
 }
 
 /**
@@ -114,8 +112,9 @@ QRgb Transformation::getPixelCyclic(int x, int y)
   */
 QRgb Transformation::getPixelNull(int x, int y)
 {
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
-
+    if(x >= image->width() || x < 0 || y >= image->height() || y < 0){
+        return qRgb(0,0,0);
+    }
     return image->pixel(x,y);
 }
 
@@ -126,7 +125,17 @@ QRgb Transformation::getPixelNull(int x, int y)
   */
 QRgb Transformation::getPixelRepeat(int x, int y)
 {
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
+    if(x >= image->width()){
+        x = image->width() - 1;
+    }else if(x < 0){
+        x = 0;
+    }
+
+    if(y >= image->height()){
+        y = image->height() - 1;
+    }else if(y < 0){
+        y = 0;
+    }
 
     return image->pixel(x,y);
 }
@@ -137,9 +146,55 @@ math::matrix<float> Transformation::getWindow(int x, int y, int size,
                                               Mode mode = RepeatEdge)
 {
     math::matrix<float> window(size,size);
+    int sasiedztwo = floor(size/2);
 
-    qDebug() << Q_FUNC_INFO << "Not implemented yet!";
+    int  m_X = 0, m_Y = 0;
 
+    //nieparzysta macierz
+    if( (size % 2) != 0){
+      //zaczynamy od "lewej" az do "prawej" strony sasiedztwa
+        for(int w = -sasiedztwo; w <= sasiedztwo; w++){
+            for(int k = -sasiedztwo; k <= sasiedztwo; k++){
+                 switch(channel){
+                    case RChannel:
+                     window(m_X, m_Y) = qRed(getPixel(x + w, y + k, mode));
+                     break;
+                    case GChannel:
+                     window(m_X, m_Y) = qGreen(getPixel(x + w, y + k, mode));
+                     break;
+                    case BChannel:
+                     window(m_X, m_Y) = qBlue(getPixel(x + w, y + k, mode));
+                     break;
+                    case LChannel:
+                     window(m_X, m_Y) = qGray(getPixel(x + w, y + k, mode));
+                     break;
+                 }
+                 m_Y += 1;
+            }
+            m_X += 1; m_Y = 0;
+        }
+    }else{
+        for(int w = -sasiedztwo; w < sasiedztwo; w++){
+            for(int k = -sasiedztwo; k < sasiedztwo; k++){
+                 switch(channel){
+                    case RChannel:
+                     window(m_X, m_Y) = qRed(getPixel(x + w, y + k, mode));
+                     break;
+                    case GChannel:
+                     window(m_X, m_Y) = qGreen(getPixel(x + w, y + k, mode));
+                     break;
+                    case BChannel:
+                     window(m_X, m_Y) = qBlue(getPixel(x + w, y + k, mode));
+                     break;
+                    case LChannel:
+                     window(m_X, m_Y) = qGray(getPixel(x + w, y + k, mode));
+                     break;
+                 }
+                 m_Y += 1;
+            }
+            m_X += 1; m_Y = 0;
+    }
+   }
     return window;
 }
 
