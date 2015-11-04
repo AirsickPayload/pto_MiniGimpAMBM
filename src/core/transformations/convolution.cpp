@@ -46,7 +46,7 @@ PNM* Convolution::convolute(math::matrix<float> mask, Mode mode = RepeatEdge)
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
                 math::matrix<float> okno = getWindow(x, y, mask.colno(), LChannel, mode);
-                math::matrix<float> akumulator = join(okno, mask);
+                math::matrix<float> akumulator = join(okno, reflection(mask));
                 float suma = sum(akumulator);
 
                 if(weight > 0){

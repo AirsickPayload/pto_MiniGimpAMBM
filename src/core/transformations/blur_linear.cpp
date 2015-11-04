@@ -14,14 +14,12 @@ PNM* BlurLinear::transform()
 {
     int maskSize = getParameter("size").toInt();
     QList<QVariant> tmpMask = getParameter("mask").toList();
-
     bool normalize = getParameter("normalize").toBool();
-
     math::matrix<float> mask(maskSize, maskSize);
 
     for(int i = 0; i < maskSize; i++){
         for(int j = 0; j < maskSize; j++){
-            mask(i, j) = 1;
+            mask(i, j) = 0;
         }
     }
     mask(0, 0) = -3;
