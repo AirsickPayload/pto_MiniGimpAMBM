@@ -174,5 +174,6 @@ const math::matrix<float> Convolution::reflection(const math::matrix<float> A)
             }
         }
     }
+
     return C;
 }
