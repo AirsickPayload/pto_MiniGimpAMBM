@@ -151,6 +151,7 @@ const math::matrix<float> Convolution::reflection(const math::matrix<float> A)
 {
     int size = A.rowno();
     math::matrix<float> C(size, size);
+    C = A;
     int srodek = floor(size/2);
     float tmp = 0;
     if( (size % 2) != 0){
