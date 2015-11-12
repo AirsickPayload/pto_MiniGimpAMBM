@@ -20,11 +20,11 @@ PNM* BinarizationGradient::transform()
 
     for (int x = 0; x < width; x++){
         for (int y = 0; y < height; y++){
+            Mode mode = Transformation::RepeatEdge;
+            QRgb pixel = qGray(getPixel(x, y, mode));
 
-            QRgb pixel = qGray(image->pixel(x, y));
-
-            Gx = qGray(image->pixel(x + 1, y)) - qGray(image->pixel(x - 1, y));
-            Gy = qGray(image->pixel(x, y + 1)) - qGray(image->pixel(x, y - 1));
+            Gx = qGray(getPixel(x + 1, y, mode)) - qGray(getPixel(x - 1, y, mode));
+            Gy = qGray(getPixel(x, y + 1, mode)) - qGray(getPixel(x, y - 1, mode));
 
             if (Gx > Gy) G = Gx;
             else G = Gy;
@@ -37,8 +37,8 @@ PNM* BinarizationGradient::transform()
 
     for (int x = 0; x < width; x++){
         for (int y = 0; y < height; y++){
-
-            QRgb pixel = image->pixel(x, y);
+            Mode mode = Transformation::RepeatEdge;
+            QRgb pixel = getPixel(x, y, mode);
             int val = qGray(pixel);
 
             if (val < T)
@@ -51,5 +51,6 @@ PNM* BinarizationGradient::transform()
 
     return newImage;
 }
+
 
 
