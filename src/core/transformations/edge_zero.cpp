@@ -25,15 +25,11 @@ PNM* EdgeZeroCrossing::transform()
     PNM* newImage = new PNM(width, height, QImage::Format_Indexed8);
 
     EdgeLaplaceOfGauss edge(image);
-    edge.setParameter("size", size);
-    edge.setParameter("sigma", sigma);
-    Transformation laplace(edge.transform());
-
     math::matrix<float> okno(size, size);
 
     for(int x = 0 ; x < width; x++){
         for(int y = 0; y < height; y++){
-            okno = laplace.getWindow(x, y, size, LChannel, RepeatEdge);
+            okno = edge.getWindow(x, y, size, LChannel, RepeatEdge);
             float min = PIXEL_VAL_MAX;
             float max = PIXEL_VAL_MIN;
 
